@@ -107,7 +107,7 @@
 
             mainContainer.innerHTML += '<font size="4" color="#ff0000"><b>Enemy&nbsp;HP</b></font><br>';
             var table = document.createElement("table");
-            data.EnemyHealth.sort(function (a, b) { return Asc(a.Percentage, b.Percentage) || Desc(a.CurrentHP, b.CurrentHP) }).forEach(function (item, index, arr) {
+            data.EnemyHealth.filter(function (a) { return a.MaximumHP > 1 }).sort(function (a, b) { return Asc(a.Percentage, b.Percentage) || Desc(a.CurrentHP, b.CurrentHP) }).forEach(function (item, index, arr) {
                 if (item.IsAlive) {
                     table.innerHTML += `<tr>
 <td><font size="4" color="#ff0000"><b>${item.CurrentHP}</b></font></td>
