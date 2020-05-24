@@ -6,8 +6,8 @@
     <!-- netcoreapp3.1 had to be hardcoded here because this project reports $(TargetFramework) as netstandard2.0 (rightfully so) and I am not sure how this project's csproj can auto-detect another project's framework version to copy it to the appropriate folder so we're just... hardcoding this. -->
     <CopyDestionationPath>$(SolutionDir)..\SRTHost\SRTHost\bin\$(Platform)\$(Configuration)\netcoreapp3.1\plugins</CopyDestionationPath>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <AssemblyVersion>2.0.1.0</AssemblyVersion>
-    <Version>2.0.1</Version>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <Version>2.1.0</Version>
     <Authors>Travis J Gutjahr</Authors>
     <Copyright>Copyright © 2020 Travis J Gutjahr</Copyright>
     <Product>JSON Server UI Plugin</Product>

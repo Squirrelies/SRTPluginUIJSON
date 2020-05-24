@@ -10,6 +10,7 @@ namespace SRTPluginUIJSON
     public class SRTPluginUIJSON : IPluginUI
     {
         public IPluginInfo Info => new PluginInfo();
+        public string RequiredProvider => string.Empty;
         public static object gameMemory = null;
         public static MethodInfo serializer = null;
         private static IPluginHostDelegates hostDelegates;
