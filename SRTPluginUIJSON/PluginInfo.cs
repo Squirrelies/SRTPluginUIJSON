@@ -11,7 +11,7 @@ namespace SRTPluginUIJSON
 
         public string Author => "Squirrelies";
 
-        public Uri MoreInfoURL => new Uri("https://github.com/Squirrelies");
+        public Uri MoreInfoURL => new Uri("https://github.com/Squirrelies/SRTPluginUIJSON");
 
         public int VersionMajor => assemblyVersion.Major;
 
