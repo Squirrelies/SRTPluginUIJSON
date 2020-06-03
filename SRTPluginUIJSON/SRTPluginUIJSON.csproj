@@ -7,11 +7,12 @@
     <CopyDestionationPath>$(SolutionDir)..\SRTHost\SRTHost\bin\$(Platform)\$(Configuration)\netcoreapp3.1\plugins</CopyDestionationPath>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <AssemblyVersion>2.1.0.0</AssemblyVersion>
-    <Version>2.1.0</Version>
+    <Version>2.1.1</Version>
     <Authors>Travis J Gutjahr</Authors>
     <Copyright>Copyright © 2020 Travis J Gutjahr</Copyright>
     <Product>JSON Server UI Plugin</Product>
     <Description>A plugin that runs a light-weight Kestrel web server to output the values provided by the loaded Provider Plugin in JSON format.</Description>
+    <FileVersion>2.1.1.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
