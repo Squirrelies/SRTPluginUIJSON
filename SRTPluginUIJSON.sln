@@ -7,20 +7,36 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SRTPluginUIJSON", "SRTPlugi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SRTPluginBase", "..\SRTHost\SRTPluginBase\SRTPluginBase.csproj", "{59E7239F-3F13-429A-A09B-863253D98EF0}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProcessMemory.Common", "..\ProcessMemory\ProcessMemory.Common\ProcessMemory.Common.csproj", "{179B3C6F-9832-43CE-B0BC-F48148FBBD55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A7A67B6E-C64A-43DE-9D03-AC3F6F5251FD}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{A7A67B6E-C64A-43DE-9D03-AC3F6F5251FD}.Debug|x64.ActiveCfg = Debug|x64
 		{A7A67B6E-C64A-43DE-9D03-AC3F6F5251FD}.Debug|x64.Build.0 = Debug|x64
+		{A7A67B6E-C64A-43DE-9D03-AC3F6F5251FD}.Release|Any CPU.ActiveCfg = Release|x64
 		{A7A67B6E-C64A-43DE-9D03-AC3F6F5251FD}.Release|x64.ActiveCfg = Release|x64
 		{A7A67B6E-C64A-43DE-9D03-AC3F6F5251FD}.Release|x64.Build.0 = Release|x64
+		{59E7239F-3F13-429A-A09B-863253D98EF0}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{59E7239F-3F13-429A-A09B-863253D98EF0}.Debug|x64.ActiveCfg = Debug|x64
 		{59E7239F-3F13-429A-A09B-863253D98EF0}.Debug|x64.Build.0 = Debug|x64
+		{59E7239F-3F13-429A-A09B-863253D98EF0}.Release|Any CPU.ActiveCfg = Release|x86
 		{59E7239F-3F13-429A-A09B-863253D98EF0}.Release|x64.ActiveCfg = Release|x64
 		{59E7239F-3F13-429A-A09B-863253D98EF0}.Release|x64.Build.0 = Release|x64
+		{179B3C6F-9832-43CE-B0BC-F48148FBBD55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{179B3C6F-9832-43CE-B0BC-F48148FBBD55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{179B3C6F-9832-43CE-B0BC-F48148FBBD55}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{179B3C6F-9832-43CE-B0BC-F48148FBBD55}.Debug|x64.Build.0 = Debug|Any CPU
+		{179B3C6F-9832-43CE-B0BC-F48148FBBD55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{179B3C6F-9832-43CE-B0BC-F48148FBBD55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{179B3C6F-9832-43CE-B0BC-F48148FBBD55}.Release|x64.ActiveCfg = Release|Any CPU
+		{179B3C6F-9832-43CE-B0BC-F48148FBBD55}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

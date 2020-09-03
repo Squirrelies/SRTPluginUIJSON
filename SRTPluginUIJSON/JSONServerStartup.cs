@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ProcessMemory.Common.SystemTextJsonConverters;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
@@ -39,6 +40,9 @@ namespace SRTPluginUIJSON
         {
             app.UseDeveloperExceptionPage();
             app.UseCors("CORSPolicy");
+
+            jsonSerializerOptions.Converters.Add(new Int24Converter());
+            jsonSerializerOptions.Converters.Add(new UInt24Converter());
 
             app.Run(async context =>
             {
