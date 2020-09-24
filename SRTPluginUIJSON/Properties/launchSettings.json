@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SRTPluginUIJSON": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

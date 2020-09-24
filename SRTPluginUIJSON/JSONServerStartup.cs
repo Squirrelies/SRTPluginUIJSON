@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ProcessMemory.Common.SystemTextJsonConverters;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
@@ -41,8 +40,9 @@ namespace SRTPluginUIJSON
             app.UseDeveloperExceptionPage();
             app.UseCors("CORSPolicy");
 
-            jsonSerializerOptions.Converters.Add(new Int24Converter());
-            jsonSerializerOptions.Converters.Add(new UInt24Converter());
+            // TODO: We need a better solution so we don't have to reference a project that is platform-specific. Maybe ProcessMemory needs an Interfaces/Types project for stuff like Int24, UInt24, Int24Converter, UInt24Converter and a few things like extension methods...
+            //jsonSerializerOptions.Converters.Add(new Int24Converter());
+            //jsonSerializerOptions.Converters.Add(new UInt24Converter());
 
             app.Run(async context =>
             {
