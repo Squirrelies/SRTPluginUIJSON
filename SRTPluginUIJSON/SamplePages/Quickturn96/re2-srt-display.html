@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>RE2 SRT</title>
+    <script>
+        // USER CONFIGURABLE VARIABLES.
+        const JSON_ADDRESS = '127.0.0.1'; // IP OR HOSTNAME OF THE COMPUTER RUNNING THE SRT. USEFUL FOR MULTIPLE PC STREAMING SETUPS.
+        const JSON_PORT = 7190; // PORT OF THE JSON ENDPOINT. NOT LIKELY TO CHANGE UNLESS YOU COMPILED THE SRT YOURSELF FROM SOURCE CODE.
+        const POLLING_RATE = 100; // THE TIME IN MILLISECONDS WE'LL REQUEST UPDATED VALUES.
+		const LOG_METRICS = true; // WHETHER METRICS SHOULD BE LOGGED TO THE CONSOLE.
+		const LOG_SAMPLE_RATE = 100; // CONTROLS METRICS SAMPLE RATE - SET TO N MEANS LOG PER N TICKS/POLLS (SEE LOG_METRICS, POLLING_RATE).
+    </script>
+    <style>
+		html {
+		    font-size: 20pt;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		}
+
+        body {
+		    background-color: #000000;
+            color: #dfd1d1;
+		}
+
+		.spaced {
+			display: flex;
+			width: 100%;
+		}
+		.spaced>* {
+			flex-grow: 1;
+		}
+		.spaced>:last-child {
+			text-align: right;
+		}
+
+		.container {
+			padding:0.3rem;
+		}
+
+		.container > * {
+			margin-bottom: 0.5rem;
+		}
+		
+		.big {
+			font-size: 2em;
+		}
+
+		.health[data-state="Fine"] {
+			color: #63c700;
+		}
+		.health[data-state="Caution"] {
+			color: #daa520;
+		}
+		.health[data-state="Danger"] {
+			color: #ff0000;
+		}
+		.health[data-state="Dead"] {
+			color: #6e1212;
+		}
+		.health[data-poison] {
+			color: #7851a9;
+		}
+		.health[data-poison] span {
+			display: inline-block;
+			color: transparent;
+			-webkit-background-clip: text;
+			background-clip: text;
+		}
+		.health[data-poison][data-state="Fine"] span {
+			background-image: linear-gradient(to right, #7cfc00, #7851a9);
+		}
+		.health[data-poison][data-state="Caution"] span {
+			background-image: linear-gradient(to right, #daa520, #7851a9);
+		}
+		.health[data-poison][data-state="Danger"] span {
+			background-image: linear-gradient(to right, #ff0000, #7851a9);
+		}
+		.health[data-poison][data-state="Dead"] span {
+			background-image: linear-gradient(to right, #6e1212, #7851a9);
+		}
+		#poisonIcon {
+			color: #7851a9;
+		}
+		
+		.enemyHPHeader {
+			color: #990000;
+			font-weight: bold;
+		}
+
+		#enemyHPBars {
+			margin-top: 0.2em;
+		}
+
+		.bar {
+			height: 1.3em;
+			line-height: 1.3em;
+			width: 100%;
+			color: #dfd1d1;
+			margin-bottom: 0.15em;
+			overflow: hidden;
+			font-weight: normal;
+			border: 1px solid #990000;
+		}
+
+		/* This makes the top-most health bar larger.  Remove if not desired */
+		.bar:first-child {
+			height: 2em;
+			line-height: 2em;
+		}
+
+		.bar > * {
+			display: inline-block;
+		}
+
+		.enemyHPPercent {
+			min-width: 6ch;
+			overflow: none;
+            text-align: right;
+		}
+
+		.enemyHPAmount {
+			margin-left: 1em;
+			overflow: none;
+		}
+
+        a {
+            color: #FFFFFF;
+        }
+
+            a:link {
+                text-decoration: none;
+            }
+
+            a:visited {
+                text-decoration: none;
+            }
+
+            a:hover {
+                text-decoration: underline;
+            }
+
+            a:active {
+                text-decoration: underline;
+            }
+
+		.da {
+			color: #969696;
+		}
+
+		#daRank {
+			font-weight: bold;
+		}
+
+		.daHeader {
+			font-weight: bold;
+		}
+		
+    </style>
+</head>
+<body>
+	<div id="status">
+		connecting...
+	</div>
+    <div class="container" hidden>
+		<div class="spaced big">
+			<div class="health">
+				<span id="playerHealth"></span>
+				<span id="poisonIcon">☣</span>
+				<span id="playerHealthState"></span>
+			</div>
+			<span id="timer"></span>
+		</div>
+		<div class="da">
+			<span class="daHeader">DA Rank</span>
+			<span id="daRank"></span>
+			<span>/</span>
+			<span id="daScore"></span>
+		</div>
+		<div>
+			<div>
+				<span class="enemyHPHeader">Enemy HP:</span>
+			</div>
+			<div id="enemyHPBars">
+			</div>
+		</div>
+	</div>
+    <script>
+		const JSON_ENDPOINT = `http://${JSON_ADDRESS}:${JSON_PORT}/`;
+		
+		var tick = -1;
+		const showTimestamp = window.performance.now() % 1 === 0
+			? x => x             // firefox gives an integer
+			: x => x.toFixed(3); // chrome gives high precision - truncate
+
+        window.onload = function () {
+			statusDiv         = document.getElementById("status");
+			container         = document.getElementsByClassName("container")[0];
+			playerHealth      = document.getElementById("playerHealth");
+			poisonIcon        = document.getElementById("poisonIcon");
+			playerHealthState = document.getElementById("playerHealthState");
+			timer             = document.getElementById("timer");
+			daRank            = document.getElementById("daRank");
+			daScore           = document.getElementById("daScore");
+			enemyHPBars       = document.getElementById("enemyHPBars");
+			healthElements    = document.getElementsByClassName("health");
+			// Try to do one update
+			update().then(() => {
+				// If it succeeded, initialize and start periodically polling updates
+				statusDiv.style.display = 'none';
+				container.removeAttribute("hidden");
+				setInterval(update, POLLING_RATE);
+			}).catch(err => {
+				// If something bad happened the first time, just show a message and direct to console - don't make more requests
+				statusDiv.textContent = "Not connected or error occured - ensure SRT is running and refresh to try again."
+					+ " The browser console may have more info - if it shows a CORS error, it could still be that the SRT is not up.";
+				throw err;
+			});
+        }
+
+        var Asc = function (a, b) {
+            if (a > b) return +1;
+            if (a < b) return -1;
+            return 0;
+        }
+
+        var Desc = function (a, b) {
+            if (a > b) return -1;
+            if (a < b) return +1;
+            return 0;
+        }
+
+        function update() {
+			tick++;
+			var checkpoints = []; //fixme
+			function checkpoint(label) { checkpoints.push([label, window.performance.now()]); }
+			var shouldLog = LOG_METRICS && (tick % LOG_SAMPLE_RATE == 0);
+			var fetchTime;
+			var renderTime;
+			var start = window.performance.now();
+            return fetch(JSON_ENDPOINT)
+                .then(function (response) {
+					checkpoint('fetch');
+                    return response.json();
+                }).then(function (data) {
+					checkpoint('read');
+					transform(data)
+					checkpoint('transform');
+					render(data);
+					checkpoint('render');
+					if (shouldLog) {
+						var before = start;
+						var messages = Array(checkpoints.length + 1);
+						var i = 0;
+						messages[i++] = `tick ${tick}`;
+						for (let checkpoint of checkpoints) {
+							var label = checkpoint[0];
+							var timestamp = checkpoint[1];
+							var elapsed = timestamp - before;
+							messages[i++] = `${label} ${showTimestamp(elapsed)}ms`;
+							before = timestamp;
+						}
+						// Would be nice to render these to the screen - for now, can print to console)
+						console.log(messages.join(", "));
+					}
+				});
+		}
+
+		// Health state - doesn't take into account poison
+		const HEALTH_DEAD    = 0;
+		const HEALTH_DANGER  = 1;
+		const HEALTH_CAUTION = 2;
+		const HEALTH_FINE    = 3;
+		const healthStateName = ['Dead', 'Danger', 'Caution', 'Fine'];
+		
+		// Transform data in-place
+		function transform(data) {
+			data.HealthState = healthState(data.PlayerCurrentHealth);
+			data.HealthStateName = healthStateName[data.HealthState];
+			// Make sure we get integers - I thought I saw a 9999.9999 or something like that at one point, but I could be crazy.
+			data.RankScore = Math.floor(data.RankScore);
+			// scrub useless enemy health entries (we always seem to get 32 back). Also ensures we don't sort so many things below.
+			data.EnemyHealth = data.EnemyHealth.filter(x => x.IsAlive);
+			// Sort by least HP % then by most current HP
+			data.EnemyHealth.sort(function (a, b) { return Asc(a.Percentage, b.Percentage) || Desc(a.CurrentHP, b.CurrentHP) });
+		}
+
+		function healthState(hp) {
+            if (hp <= 1200 && hp >= 801)
+                return HEALTH_FINE;
+            if (hp <= 800 && hp >= 361)
+                return HEALTH_CAUTION;
+            if (hp <= 360 && hp >= 1)
+                return HEALTH_DANGER;
+            return HEALTH_DEAD;
+		}
+
+        function render(data) {
+			playerHealth.textContent = data.PlayerCurrentHealth;
+			playerHealthState.textContent = data.HealthStateName;
+            timer.textContent = data.IGTFormattedString;
+            daRank.textContent = data.Rank;
+			daScore.textContent = data.RankScore;
+
+			for (let element of healthElements) {
+				if (data.PlayerPoisoned) {
+					element.setAttribute("data-poison", "");
+				} else {
+					element.removeAttribute("data-poison");
+				}
+				element.setAttribute("data-state", data.HealthStateName);
+			}
+			
+			if (data.PlayerPoisoned) {
+				poisonIcon.removeAttribute("hidden");
+			} else {
+				poisonIcon.setAttribute("hidden", "");
+			}
+			
+			// Refresh enemy HP bars
+			while (enemyHPBars.lastElementChild) {
+				enemyHPBars.removeChild(enemyHPBars.lastElementChild);
+			}
+			for (let item of data.EnemyHealth) {
+				const healthPct = parseFloat(item.Percentage * 100).toFixed(1);
+
+				var bar = document.createElement("div");
+				bar.classList.add('bar');
+				bar.style.background = `linear-gradient(to right, #ac0000 ${healthPct}%, black ${healthPct}%)`;
+
+				var elem;
+
+				elem = document.createElement("span");
+				elem.classList.add('enemyHPPercent');
+				elem.textContent = healthPct + '%';
+				bar.appendChild(elem);
+
+				elem = document.createElement("span");
+				elem.classList.add('enemyHPAmount');
+				elem.textContent = item.CurrentHP;
+				bar.appendChild(elem);
+
+				enemyHPBars.appendChild(bar);
+			}
+		}
+    </script>
+</body>
+</html>
