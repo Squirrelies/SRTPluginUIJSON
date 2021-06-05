@@ -46,7 +46,7 @@ namespace SRTPluginUIJSON
 
             app.Run(async context =>
             {
-                context.Response.ContentType = "application/json";
+                context.Response.ContentType = "application/json; charset=utf-8";
                 if (SRTPluginUIJSON.serializer != null)
                     await (Task)SRTPluginUIJSON.serializer.Invoke(null, new object[] { context.Response.Body, SRTPluginUIJSON.gameMemory, jsonSerializerOptions, CancellationToken.None });
                 else
