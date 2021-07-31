@@ -138,6 +138,6 @@ jobs:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         automatic_release_tag: ${{needs.build.outputs.version}}
         prerelease: ${{env.is-prerelease}}
-        title: 'Automated Build - v${{needs.build.outputs.version}}'
+        title: 'Automated Build - ${{needs.build.outputs.version}}'
         files: |
           ${{needs.build.outputs.zip-filename}}
