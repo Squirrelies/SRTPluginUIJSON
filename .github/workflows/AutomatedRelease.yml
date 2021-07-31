@@ -12,7 +12,7 @@ jobs:
     env:
       working-directory: .
       project-name: SRTPluginUIJSON
-      platform: AnyCPU
+      platform: Any CPU
       configuration: Release
     outputs:
       solution: ${{steps.generated-variables-1.outputs.solution}}
@@ -58,7 +58,7 @@ jobs:
     # Compiles the program and runs the publish profile
     - name: Compile and run publish profile
       run: |
-        dotnet build ${{steps.generated-variables-1.outputs.solution}} -c ${{env.configuration}} /p:Platform=${{env.platform}}
+        dotnet build ${{steps.generated-variables-1.outputs.solution}} -c "${{env.configuration}}" /p:Platform="${{env.platform}}"
 
     # Decode the base 64 encoded pfx and save the code signing certificate
     - name: Decode the pfx
