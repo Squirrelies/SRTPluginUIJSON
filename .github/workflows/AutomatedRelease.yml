@@ -22,6 +22,11 @@ jobs:
       version: ${{steps.get_version.outputs.RELEASE_VERSION}}
 
     steps:
+    # Show varous environment variables
+    - name: Show varous environment variables
+      run: |
+        echo '${{github.workspace}}'
+        
     # Checkout latest code
     - name: Checkout
       uses: actions/checkout@v2
