@@ -117,7 +117,7 @@ jobs:
       run: |
         Add-Type -assembly 'System.IO.Compression'
         Add-Type -assembly 'System.IO.Compression.FileSystem'
-        [System.IO.Compression.ZipArchive]$zipFile = [System.IO.Compression.ZipFile]::Open('${{needs.publish.outputs.zip-filename}}', ([System.IO.Compression.ZipArchiveMode]::Create))
+        [System.IO.Compression.ZipArchive]$zipFile = [System.IO.Compression.ZipFile]::Open('${{needs.build.outputs.zip-filename}}', ([System.IO.Compression.ZipArchiveMode]::Create))
         $filesToZip = (Get-ChildItem -Path artifact/ -Filter *).fullname
         foreach ($fileToZip in $filesToZip) {
             [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zipFile, $fileToZip, (Split-Path $fileToZip -Leaf))
@@ -130,8 +130,8 @@ jobs:
       uses: "marvinpinto/action-automatic-releases@latest"
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        automatic_release_tag: ${{needs.publish.outputs.version}}
+        automatic_release_tag: ${{needs.build.outputs.version}}
         prerelease: ${{env.is-prerelease}}
-        title: 'Automated Build - v${{needs.publish.outputs.version}}'
+        title: 'Automated Build - v${{needs.build.outputs.version}}'
         files: |
-          ${{needs.publish.outputs.zip-filename}}
+          ${{needs.build.outputs.zip-filename}}
