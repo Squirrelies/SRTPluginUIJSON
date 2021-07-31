@@ -26,6 +26,7 @@ jobs:
     - name: Show varous environment variables
       run: |
         echo '${{github.workspace}}'
+        echo '${{github.ref}}'
         
     # Checkout latest code
     - name: Checkout
