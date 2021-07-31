@@ -122,8 +122,8 @@ jobs:
         [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zipFile, 'LICENSE', '${{needs.build.outputs.project-name}}\LICENSE')
         $filesToZip = (Get-ChildItem -Path artifact -File -Recurse).FullName
         foreach ($fileToZip in $filesToZip) {
-            $fileNameInZip = $fileToZip.Replace('$pwd.Path\artifact\','')
-            [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zipFile, $fileToZip, '${{needs.build.outputs.project-name}}\$fileNameInZip')
+            $fileNameInZip = $fileToZip.Replace($pwd.Path\artifact\,$(string.Empty))
+            [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zipFile, $fileToZip, ${{needs.build.outputs.project-name}}\$fileNameInZip)
         }
         $zipFile.Dispose()
 
