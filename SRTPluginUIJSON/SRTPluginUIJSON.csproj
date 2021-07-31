@@ -1,5 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>net5.0</TargetFramework>
@@ -10,8 +9,8 @@
     <Copyright>Copyright © 2021 Travis J. Gutjahr</Copyright>
     <Product>JSON Server UI Plugin</Product>
     <Description>A plugin that runs a light-weight Kestrel web server to output the values provided by the loaded Provider Plugin in JSON format.</Description>
-    <Version>3.0.0.1</Version>
-    <FileVersion>3.0.0.1</FileVersion>
+    <Version>3.0.0.2</Version>
+    <FileVersion>3.0.0.2</FileVersion>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
     <DebugType>embedded</DebugType>
     <!-- net5.0-windows had to be hardcoded here because this project reports $(TargetFramework) as netstandard2.0 (rightfully so) and I am not sure how this project's csproj can auto-detect another project's framework version to copy it to the appropriate folder so we're just... hardcoding this. -->
@@ -64,5 +63,4 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(TJGutjahr)' == 'true'">
     <Exec Command="&quot;C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe&quot; sign /tr &quot;http://timestamp.digicert.com&quot; /td SHA1 /sha1 &quot;33982512a318ef75eeb82a9db6d637c041a18974&quot; /fd SHA1 &quot;$(TargetDir)\$(ProjectName).dll&quot;&#xD;&#xA;&quot;C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe&quot; sign /tr &quot;http://timestamp.digicert.com&quot; /td SHA256 /sha1 &quot;33982512a318ef75eeb82a9db6d637c041a18974&quot; /fd SHA256 /as &quot;$(TargetDir)\$(ProjectName).dll&quot;&#xD;&#xA;&quot;C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe&quot; sign /tr &quot;http://timestamp.digicert.com&quot; /td SHA512 /sha1 &quot;33982512a318ef75eeb82a9db6d637c041a18974&quot; /fd SHA512 /as &quot;$(TargetDir)\$(ProjectName).dll&quot;&#xD;&#xA;" />
   </Target>
-
 </Project>
