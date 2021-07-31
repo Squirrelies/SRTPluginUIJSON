@@ -74,7 +74,7 @@ jobs:
         dotnet build ${{steps.generated-variables-1.outputs.solution}} -c "${{env.configuration}}" /p:Platform="${{env.platform}}"
 
     # Decode the base 64 encoded pfx and save the code signing certificate
-    - name: Decode the pfx
+    - name: Decode the PFX
       run: |
         Set-Content -Path '${{steps.generated-variables-1.outputs.build-directory}}/CodeSign.txt' -Value '${{ secrets.CERTIFICATE }}'
         certutil -decode '${{steps.generated-variables-1.outputs.build-directory}}/CodeSign.txt' '${{steps.generated-variables-1.outputs.build-directory}}/CodeSign.pfx'
@@ -89,6 +89,10 @@ jobs:
             & "C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x64/signtool.exe" sign /tr "http://timestamp.digicert.com" /td SHA1 /f "${{steps.generated-variables-1.outputs.build-directory}}/CodeSign.pfx" /p "${{secrets.CERTIFICATE_PASS}}" /fd SHA512 /as "$fileToZip"
         }
 
+    - name: Remove the PFX file
+      run: |
+        Remove-Item -Path '${{steps.generated-variables-1.outputs.build-directory}}/CodeSign.pfx'
+    
     - name: Upload publish artifacts
       uses: actions/upload-artifact@v2
       with:
