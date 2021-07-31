@@ -1,9 +1,9 @@
 name: "Automated Release"
 
 on:
-  pull_request:
+  push:
     branches:
-      - "master"
+      - master
 
 jobs:
   build:
@@ -21,19 +21,12 @@ jobs:
       zip-filename: ${{steps.generated-variables-2.outputs.zip-filename}}
       version: ${{steps.get_version.outputs.RELEASE_VERSION}}
 
-    steps:
-    # Show varous environment variables
-    - name: Show varous environment variables
-      run: |
-        echo '${{github.workspace}}'
-        echo '${{github.ref}}'
-        
+    steps:        
     # Checkout latest code
     - name: Checkout
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - run: ls
     
     # Checkout latest dependencies code
     - name: Checkout SRTHost
@@ -42,7 +35,10 @@ jobs:
         fetch-depth: 0
         path: SRTHost
         repository: Squirrelies/SRTHost
-    - run: ls SRTHost/
+
+    # GITHUB_WORKSPACE pathing is ass. Move this directory down one level.
+    - name: Move SRTHost down a folder to work with existing csproj pathing
+      run: Move-Item -Path SRTHost -Destination ..
 
     # Set some output variables
     - name: Set the main environment variables based on other environment variables
