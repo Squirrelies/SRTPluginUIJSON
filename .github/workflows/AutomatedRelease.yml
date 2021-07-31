@@ -22,21 +22,20 @@ jobs:
       version: ${{steps.get_version.outputs.RELEASE_VERSION}}
 
     steps:
-    # Checkout latest dependencies code
-    - name: Checkout SRTHost
-      uses: actions/checkout@v2
-      with:
-        clean: false
-        fetch-depth: 0
-        repository: Squirrelies/SRTHost
-
     # Checkout latest code
     - name: Checkout
       uses: actions/checkout@v2
       with:
-        clean: false
         fetch-depth: 0
-
+        
+    # Checkout latest dependencies code
+    - name: Checkout SRTHost
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        path: SRTHost
+        repository: Squirrelies/SRTHost
+        
     # Set some output variables
     - name: Set the main environment variables based on other environment variables
       id: generated-variables-1
