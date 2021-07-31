@@ -119,10 +119,10 @@ jobs:
         Add-Type -assembly 'System.IO.Compression'
         Add-Type -assembly 'System.IO.Compression.FileSystem'
         [System.IO.Compression.ZipArchive]$zipFile = [System.IO.Compression.ZipFile]::Open('${{needs.build.outputs.zip-filename}}', ([System.IO.Compression.ZipArchiveMode]::Create))
-        [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zipFile, 'LICENSE', '${{needs.build.outputs.project-name}}\LICENSE')
+        [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zipFile, "LICENSE", ${{needs.build.outputs.project-name}} + "\LICENSE")
         $filesToZip = (Get-ChildItem -Path artifact -File -Recurse).FullName
         foreach ($fileToZip in $filesToZip) {
-            [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zipFile, '$fileToZip', '${{needs.build.outputs.project-name}}\$fileToZip.Replace(($pwd.Path + "\artifact\"),"")')
+            [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zipFile, $fileToZip, ${{needs.build.outputs.project-name}} + "\" + $fileToZip.Replace(($pwd.Path + "\artifact\"),""))
         }
         $zipFile.Dispose()
 
