@@ -5,16 +5,16 @@
     <LangVersion>latest</LangVersion>
     <Platforms>AnyCPU</Platforms>
     <Authors>Travis J. Gutjahr</Authors>
-    <Company>Travis J. Gutjahr</Company>
-    <Copyright>Copyright © 2021 Travis J. Gutjahr</Copyright>
+	<Company>$(Authors)</Company>
+    <Copyright>Copyright © 2025 $(Authors)</Copyright>
     <Product>JSON Server UI Plugin</Product>
     <Description>A plugin that runs a light-weight Kestrel web server to output the values provided by the loaded Provider Plugin in JSON format.</Description>
-    <Version>3.0.0.1</Version>
-    <FileVersion>3.0.0.1</FileVersion>
+    <Version>3.1.0</Version>
+    <FileVersion>3.1.0</FileVersion>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
     <DebugType>embedded</DebugType>
     <!-- net5.0-windows had to be hardcoded here because this project reports $(TargetFramework) as netstandard2.0 (rightfully so) and I am not sure how this project's csproj can auto-detect another project's framework version to copy it to the appropriate folder so we're just... hardcoding this. -->
-    <CopyDestionationPath>$(SolutionDir)..\SRTHost\SRTHost\bin\$(Configuration)\net5.0-windows\plugins</CopyDestionationPath>
+    <CopyDestionationPath>$(SolutionDir)..\..\SpeedRunTool\SRTHost\SRTHost\bin\$(Configuration)\net5.0-windows\plugins</CopyDestionationPath>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
@@ -31,27 +31,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0">
-    </PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0">
-    </PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7">
-    </PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0">
-    </PackageReference>
-    <PackageReference Include="System.Text.Json" Version="5.0.2">
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\SRTHost\SRTPluginBase\SRTPluginBase.csproj">
-      <Private>false</Private>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </ProjectReference>
-  </ItemGroup>
-
+	
   <Target Name="CopyOutputToDestination" AfterTargets="AfterBuild">
     <ItemGroup>
       <OutputFiles Include="$(OutDir)**\*"></OutputFiles>
@@ -60,7 +40,23 @@
     <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(CopyDestionationPath)\$(ProjectName)\%(RecursiveDir)" OverwriteReadOnlyFiles="true"></Copy>
   </Target>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(TJGutjahr)' == 'true'">
-    <Exec Command="&quot;C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe&quot; sign /tr &quot;http://timestamp.digicert.com&quot; /td SHA1 /sha1 &quot;33982512a318ef75eeb82a9db6d637c041a18974&quot; /fd SHA1 &quot;$(TargetDir)\$(ProjectName).dll&quot;&#xD;&#xA;&quot;C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe&quot; sign /tr &quot;http://timestamp.digicert.com&quot; /td SHA256 /sha1 &quot;33982512a318ef75eeb82a9db6d637c041a18974&quot; /fd SHA256 /as &quot;$(TargetDir)\$(ProjectName).dll&quot;&#xD;&#xA;&quot;C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe&quot; sign /tr &quot;http://timestamp.digicert.com&quot; /td SHA512 /sha1 &quot;33982512a318ef75eeb82a9db6d637c041a18974&quot; /fd SHA512 /as &quot;$(TargetDir)\$(ProjectName).dll&quot;&#xD;&#xA;" />
-  </Target>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.3.0">
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.3.0">
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.3.0">
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.3.0">
+    </PackageReference>
+    <PackageReference Include="System.Text.Json" Version="9.0.2">
+    </PackageReference>
+  </ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\SpeedRunTool\SRTHost\SRTPluginBase\SRTPluginBase.csproj">
+			<Private>false</Private>
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</ProjectReference>
+	</ItemGroup>
 </Project>
